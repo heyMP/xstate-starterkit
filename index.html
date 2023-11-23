@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="Description" content="Put your description here.">
+  <base href="/">
+  <link rel="stylesheet" href="https://ux.redhat.com/assets/rhds.min.css">
+  <title>rhpt-my-trials-app</title>
+  <style>
+    iframe {
+      display: block;
+      width: 100%;
+      height: 800px;
+    }
+  </style>
+</head>
+
+<body>
+  <rhpt-my-trials-app></rhpt-my-trials-app>
+
+  <script type="module">
+    import {inspect} from '@xstate/inspect';
+    inspect({iframe: false})
+  </script>
+  <script type="module" src="./out-tsc/src/rhpt-my-trials-app.js"></script>
+ </body>
+
+</html>
