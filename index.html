@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,25 +6,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="Description" content="Put your description here.">
   <base href="/">
-  <link rel="stylesheet" href="https://ux.redhat.com/assets/rhds.min.css">
-  <title>rhpt-my-trials-app</title>
+  <title>XState StarterKit</title>
   <style>
     iframe {
+      --gap: 3rem;
       display: block;
-      width: 100%;
+      width: calc(100% - (var(--gap) * 2));
       height: 800px;
+      margin: var(--gap);
     }
   </style>
 </head>
 
 <body>
-  <rhpt-my-trials-app></rhpt-my-trials-app>
+  <x-app></x-app>
+  <iframe inspector></iframe>
 
   <script type="module">
     import {inspect} from '@xstate/inspect';
-    inspect({iframe: false})
+    const iframe = document.querySelector('iframe[inspector]');
+    inspect({iframe: true, iframe})
   </script>
-  <script type="module" src="./out-tsc/src/rhpt-my-trials-app.js"></script>
+  <script type="module" src="./out-tsc/src/x-app.js"></script>
  </body>
 
 </html>

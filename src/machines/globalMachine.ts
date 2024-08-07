@@ -17,6 +17,8 @@ export const globalMachine = createMachine({
     },
     events: {} as
       | { type: 'UPDATE_USER', payload: { user: Partial<User> } }
+      | { type: 'EDIT_USER' }
+      | { type: 'CANCEL' }
   },
   context: {
     debug: false,
@@ -36,6 +38,22 @@ export const globalMachine = createMachine({
       }
     },
     'idle': {
+      on: {
+        'EDIT_USER': {
+          target: 'edit'
+        }
+      }
+    },
+    'edit': {
+      on: {
+        'UPDATE_USER': {
+          target: 'idle',
+          actions: 'updateUser'
+        },
+        'CANCEL': {
+          target: 'idle'
+        },
+      }
     },
   }
 },

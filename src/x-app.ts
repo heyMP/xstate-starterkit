@@ -1,29 +1,18 @@
-import { LitElement, html, css, TemplateResult } from 'lit';
-import { property } from 'lit/decorators/property.js';
+import { LitElement, html, css, TemplateResult, PropertyValueMap } from 'lit';
 import { customElement } from 'lit/decorators/custom-element.js';
-import './elements/child.js';
-import { globalMachine } from "./machines/globalMachine.js";
+import { InterpretController } from './lib/xstate-controller.js';
 import { SendEvent } from './lib/events.js';
-import { XstateController } from './lib/machine-controller.js';
+import { globalMachine } from "./machines/globalMachine.js";
+import './elements/user-edit.js';
 
-@customElement('rhpt-my-trials-app')
-export class RhptMyTrialsApp extends LitElement {
+@customElement('x-app')
+export class XApp extends LitElement {
   static styles = css``;
 
-  public xstate = new XstateController(this);
-
-  @property({ type: Object, attribute: false })
-  globalMachine?: typeof globalMachine;
-
-  updated(changedProperties: any) {
-    if (changedProperties.has('globalMachine') && this.globalMachine !== undefined) {
-      this.xstate.updateMachine(this.globalMachine);
-    }
-  }
+  public xstate = new InterpretController(this, globalMachine, { devTools: true });
 
   render() {
-    const { state } = this.xstate
-
+    const state = this.xstate?.value.getSnapshot();
     const ret: Array<TemplateResult> = [];
     if (state?.matches("initializing")) {
       ret.push(html`
@@ -32,8 +21,13 @@ export class RhptMyTrialsApp extends LitElement {
     }
     else if (state?.matches("idle")) {
       ret.push(html`
-        <div>User Name: ${state.context.user.name}</div>
-        <rhpt-my-trials-child .xstate=${this.xstate}></rhpt-my-trials-child>
+        <span>User name: ${state.context.user.name}</span>
+        <button @click=${() => this.xstate?.value.send({ type: 'EDIT_USER' })}>edit</button>
+      `);
+    }
+    else if (state?.matches("edit")) {
+      ret.push(html`
+        <x-user-edit .actor=${this.xstate?.value}></x-user-edit>
       `);
     }
 
@@ -63,7 +57,7 @@ export class RhptMyTrialsApp extends LitElement {
   // eslint-disable-next-line class-methods-use-this
   sendEventHandler(e: Event) {
     if (e instanceof SendEvent) {
-      this.xstate?.globalActor?.send(e.event);
+      this.xstate?.value?.send(e.event);
     }
   }
 }
